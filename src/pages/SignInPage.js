@@ -1,28 +1,77 @@
-import styled from "styled-components"
-import { Link } from "react-router-dom"
-import MyWalletLogo from "../components/MyWalletLogo"
+import styled from "styled-components";
+import { Link, Navigate } from "react-router-dom";
+import MyWalletLogo from "../components/MyWalletLogo";
+import { useState, useContext, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import userContext from "../context/userContext";
 
 export default function SignInPage() {
-  return (
-    <SingInContainer>
-      <form>
-        <MyWalletLogo />
-        <input placeholder="E-mail" type="email" />
-        <input placeholder="Senha" type="password" autocomplete="new-password" />
-        <button>Entrar</button>
-      </form>
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const { token, setToken, setUserInfo } = useContext(userContext);
+	const navigate = useNavigate();
 
-      <Link>
-        Primeira vez? Cadastre-se!
-      </Link>
-    </SingInContainer>
-  )
+	function login(e) {
+		e.preventDefault();
+		const url = "https://mywallet-back-tcxg.onrender.com/login";
+		const body = {
+			email,
+			password,
+		};
+		const promise = axios
+			.post(url, body)
+			.then((r) => {
+				setToken(r.data);
+				localStorage.setItem("token", token);
+				navigate("/home");
+			})
+			.catch((e) => {
+				alert(e.response.data);
+			});
+	}
+	useEffect(() => {
+		const body = {
+			email,
+			password,
+		};
+		const userPromise = axios
+			.post("https://mywallet-back-tcxg.onrender.com/usuarios", body)
+			.then((r) => setUserInfo(r))
+			.catch((e) => console.log(e));
+	}, [login]);
+
+	return (
+		<SingInContainer>
+			<form onSubmit={login}>
+				<MyWalletLogo />
+				<input
+					placeholder="E-mail"
+					type="email"
+					required
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+				/>
+				<input
+					placeholder="Senha"
+					type="password"
+					autoComplete="new-password"
+					required
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+				/>
+				<button type="submit">Entrar</button>
+			</form>
+
+			<Link to={"/cadastro"}>Primeira vez? Cadastre-se!</Link>
+		</SingInContainer>
+	);
 }
 
 const SingInContainer = styled.section`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+`;
