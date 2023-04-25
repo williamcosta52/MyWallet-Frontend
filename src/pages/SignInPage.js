@@ -22,7 +22,7 @@ export default function SignInPage() {
 			.post(url, body)
 			.then((r) => {
 				setToken(r.data);
-				localStorage.setItem("token", token);
+				localStorage.setItem("token", r.data);
 				navigate("/home");
 			})
 			.catch(() => {
