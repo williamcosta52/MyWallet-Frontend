@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MyWalletLogo from "../components/MyWalletLogo";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import userContext from "../context/userContext";
 
 export default function SignInPage() {
@@ -19,7 +18,7 @@ export default function SignInPage() {
 			email,
 			password,
 		};
-		const promise = axios
+		axios
 			.post(url, body)
 			.then((r) => {
 				setToken(r.data);
@@ -35,7 +34,7 @@ export default function SignInPage() {
 			email,
 			password,
 		};
-		const userPromise = axios
+		axios
 			.post("https://mywallet-back-tcxg.onrender.com/usuarios", body)
 			.then((r) => setUserInfo(r))
 			.catch((e) => console.log(e));

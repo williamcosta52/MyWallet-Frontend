@@ -10,7 +10,6 @@ export default function HomePage() {
 	const { token, userInfo, setTransInfo } = useContext(userContext);
 	const [userTransactions, setUserTransactions] = useState([]);
 	const navigate = useNavigate();
-	console.log(userTransactions);
 
 	useEffect(() => {
 		const url = "https://mywallet-back-tcxg.onrender.com/transacoes";
@@ -22,13 +21,13 @@ export default function HomePage() {
 				Authorization: `Bearer ${token}`,
 			},
 		};
-		const transactions = axios
+		axios
 			.get(url, config)
 			.then((r) => {
 				setUserTransactions(r);
 			})
 			.catch((e) => console.log(e));
-	}, []);
+	}, [userTransactions]);
 
 	function addTransaction(e) {
 		e.preventDefault();

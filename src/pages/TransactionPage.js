@@ -2,11 +2,13 @@ import { useContext, useState } from "react";
 import styled from "styled-components";
 import userContext from "../context/userContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function TransactionsPage() {
 	const [valueTransiction, setValueTransiction] = useState([]);
 	const [transictionDescription, setTransictionDescription] = useState("");
 	const { transInfo, token } = useContext(userContext);
+	const navigate = useNavigate();
 
 	function attTransaction(e) {
 		e.preventDefault();
@@ -23,9 +25,12 @@ export default function TransactionsPage() {
 			},
 		};
 
-		const promise = axios.post(url, config, body);
+		const promise = axios.post(url, body, config);
 
-		promise.then((r) => console.log(r));
+		promise.then((r) => {
+			navigate("/home");
+			alert("Criado com sucesso");
+		});
 		promise.catch((e) => console.log(e));
 	}
 

@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import MyWalletLogo from "../components/MyWalletLogo";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
 	const [email, setEmail] = useState([]);
@@ -25,7 +24,7 @@ export default function SignUpPage() {
 
 		const url = "https://mywallet-back-tcxg.onrender.com/cadastro";
 
-		const promise = axios
+		axios
 			.post(url, body)
 			.then((res) => {
 				alert("Conta Criada com sucesso!");

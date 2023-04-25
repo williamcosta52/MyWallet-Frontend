@@ -8,7 +8,7 @@ import userContext from "./context/userContext";
 import { useState } from "react";
 
 export default function App() {
-	const [token, setToken] = useState([]);
+	const [token, setToken] = useState("");
 	const [userInfo, setUserInfo] = useState([]);
 	const [transInfo, setTransInfo] = useState("");
 
