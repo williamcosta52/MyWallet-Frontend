@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import userContext from "../context/userContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export default function TransactionsPage() {
 	const [valueTransiction, setValueTransiction] = useState([]);
@@ -13,7 +13,7 @@ export default function TransactionsPage() {
 	function attTransaction(e) {
 		e.preventDefault();
 
-		const url = `https://mywallet-back-tcxg.onrender.com/nova-transacao/${transInfo}`;
+		const url = `${process.env.REACT_APP_API_URL}/nova-transacao/${transInfo}`;
 
 		const body = {
 			value: valueTransiction,

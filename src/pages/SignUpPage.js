@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import styled from "styled-components";
 import MyWalletLogo from "../components/MyWalletLogo";
 import axios from "axios";
-import { useState } from "react";
 
 export default function SignUpPage() {
 	const [email, setEmail] = useState([]);
@@ -22,7 +22,7 @@ export default function SignUpPage() {
 			password,
 		};
 
-		const url = "https://mywallet-back-tcxg.onrender.com/cadastro";
+		const url = `${process.env.REACT_APP_API_URL}/cadastro`;
 
 		axios
 			.post(url, body)

@@ -1,9 +1,9 @@
-import styled from "styled-components";
 import { BiExit } from "react-icons/bi";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { useContext, useEffect, useState } from "react";
-import userContext from "../context/userContext";
 import { useNavigate } from "react-router-dom";
+import userContext from "../context/userContext";
+import styled from "styled-components";
 import axios from "axios";
 
 export default function HomePage() {
@@ -11,8 +11,18 @@ export default function HomePage() {
 	const [userTransactions, setUserTransactions] = useState([]);
 	const navigate = useNavigate();
 
+	let balance = userTransactions
+		.reduce((accumulator, transaction) => {
+			if (transaction.type === "entrada") {
+				return accumulator + Number(transaction.value);
+			} else {
+				return accumulator - Number(transaction.value);
+			}
+		}, 0)
+		.toFixed(2);
+
 	useEffect(() => {
-		const url = "https://mywallet-back-tcxg.onrender.com/transacoes";
+		const url = `${process.env.REACT_APP_API_URL}/transacoes`;
 		if (!token) {
 			navigate("/");
 		}
@@ -24,10 +34,14 @@ export default function HomePage() {
 		axios
 			.get(url, config)
 			.then((r) => {
-				setUserTransactions(r);
+				setUserTransactions(r.data);
 			})
 			.catch((e) => console.log(e));
-	}, [userTransactions]);
+		const tokenLocal = localStorage.getItem("token");
+		if (!tokenLocal) {
+			navigate("/");
+		}
+	}, [setUserTransactions]);
 
 	function addTransaction(e) {
 		e.preventDefault();
@@ -39,38 +53,37 @@ export default function HomePage() {
 		navigate("/nova-transacao/saida");
 		setTransInfo("saida");
 	}
+	function exit() {
+		localStorage.removeItem("token");
+		navigate("/");
+	}
 
 	return (
 		<HomeContainer>
 			<Header>
 				<h1>Olá, {userInfo.data.name}</h1>
-				<BiExit />
+				<BiExit onClick={exit} />
 			</Header>
 
 			<TransactionsContainer>
 				<ul>
-					<ListItemContainer>
-						<div>
-							{/* {userTransactions.length === 0 ? (
-								<span>Nenhuma transação encontrada</span>
-							) : (
-								userTransactions.map((t) => {
-									return (
-										<>
-											<span>{t.date}</span>
-											<strong>{t.description}</strong>
-										</>
-									);
-								})
-							)} */}
-							<span>Nenhuma transação</span>
-						</div>
-						<Value color={"negativo"}>10 real</Value>
-					</ListItemContainer>
+					{userTransactions.length > 0 ? (
+						userTransactions.reverse().map((t, index) => (
+							<ListItemContainer key={index}>
+								<div>
+									<span>{t.date}</span>
+									<strong>{t.description}</strong>
+								</div>
+								<Value color={t.type}>{Number(t.value).toFixed(2)}</Value>
+							</ListItemContainer>
+						))
+					) : (
+						<Span>Nenhuma transação</Span>
+					)}
 				</ul>
 				<article>
 					<strong>Saldo</strong>
-					<Value color={"positivo"}>2880,00</Value>
+					<Value color={balance < 0 ? "" : "entrada"}>{balance}</Value>
 				</article>
 			</TransactionsContainer>
 
@@ -147,7 +160,7 @@ const ButtonsContainer = styled.section`
 const Value = styled.div`
 	font-size: 16px;
 	text-align: right;
-	color: ${(props) => (props.color === "positivo" ? "green" : "red")};
+	color: ${(props) => (props.color === "entrada" ? "green" : "red")};
 `;
 const ListItemContainer = styled.li`
 	display: flex;
@@ -160,4 +173,13 @@ const ListItemContainer = styled.li`
 		color: #c6c6c6;
 		margin-right: 10px;
 	}
+`;
+const Span = styled.span`
+	font-family: "Raleway";
+	font-style: normal;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 23px;
+	text-align: center;
+	color: #868686;
 `;

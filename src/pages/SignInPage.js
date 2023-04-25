@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MyWalletLogo from "../components/MyWalletLogo";
-import { useState, useContext, useEffect } from "react";
 import axios from "axios";
+import styled from "styled-components";
 import userContext from "../context/userContext";
 
 export default function SignInPage() {
@@ -13,7 +13,7 @@ export default function SignInPage() {
 
 	function login(e) {
 		e.preventDefault();
-		const url = "https://mywallet-back-tcxg.onrender.com/login";
+		const url = `${process.env.REACT_APP_API_URL}/login`;
 		const body = {
 			email,
 			password,
@@ -25,8 +25,8 @@ export default function SignInPage() {
 				localStorage.setItem("token", token);
 				navigate("/home");
 			})
-			.catch((e) => {
-				alert(e.response.data);
+			.catch(() => {
+				alert("Email ou senha inválidos");
 			});
 	}
 	useEffect(() => {
@@ -35,10 +35,10 @@ export default function SignInPage() {
 			password,
 		};
 		axios
-			.post("https://mywallet-back-tcxg.onrender.com/usuarios", body)
+			.post(`${process.env.REACT_APP_API_URL}/usuarios`, body)
 			.then((r) => setUserInfo(r))
 			.catch((e) => console.log(e));
-	}, [login]);
+	}, []);
 
 	return (
 		<SingInContainer>
