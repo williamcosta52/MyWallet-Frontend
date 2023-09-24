@@ -28,6 +28,9 @@
 ```bash
   $ npm start
 ```
+## This project is deployd on Vercel: https://mywallet-three-ecru.vercel.app/
+
+
 ### Feel free to contact me about this or another project:
 
 <div align="left">
